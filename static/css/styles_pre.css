@@ -32,13 +32,21 @@ header h1 a {
 }
 
 /* メインコンテンツのスタイル */
+/* main {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+} */
 main {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 80vh; /* 画面の高さに応じて中央寄せ */
-    padding: 20px;
+    padding: 0;
     margin: 0 auto;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -120,13 +128,13 @@ div p {
 
 /* カード表示 */
 div > div {
-    width: 200px; /* カード幅を統一 */
-    margin: 10px; /* カード間の間隔を調整 */
-    background: #fff;
+    display: inline-block;
+    width: 150px;
+    margin: 10px;
+    background: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 10px;
-    text-align: center; /* 内容を中央寄せ */
 }
 
 div > div:hover {
@@ -135,9 +143,5 @@ div > div:hover {
 
 /* リストの親コンテナ */
 div {
-    display: flex; /* フレックスボックスを使用 */
-    flex-wrap: wrap; /* 横に並べて、折り返しを有効化 */
-    justify-content: center; /* コンテンツを中央揃え */
-    gap: 20px; /* カード間のスペース */
-    margin-top: 20px;
+    text-align: center;
 }

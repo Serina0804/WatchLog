@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+print(f"Current working directory: {os.getcwd()}")
+
 # データベースの代わりにリストを使用（簡易版）
 # records = []
 
@@ -24,7 +26,6 @@ if not os.path.exists('watchlog.db'):
         db.create_all()
 
 @app.route('/')
-
 def home():
     return render_template('index.html')
 
@@ -34,19 +35,6 @@ def reset_records():
     records = []  # リストを空にする
     return redirect(url_for('view_records'))
 
-
-# @app.route('/add', methods=['GET', 'POST'])
-# def add_record():
-#     if request.method == 'POST':
-#         title = request.form['title']
-#         rating = request.form['rating']
-#         image = request.files['image']
-#         image_path = f'static/uploads/{image.filename}'
-#         image.save(image_path)
-#         records.append({'title': title, 'rating': rating, 'image': image_path})
-#         print(records)
-#         return redirect(url_for('view_records'))
-#     return render_template('add_record.html')
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_record():
@@ -66,6 +54,8 @@ def add_record():
         new_record = Record(title=title, rating=rating, image_path=image_path)
         db.session.add(new_record)
         db.session.commit()
+        
+        print(f"Record added: {new_record.title}, {new_record.rating}, {new_record.image_path}")
 
         return redirect(url_for('view_records'))
     return render_template('add_record.html')
@@ -74,6 +64,7 @@ def add_record():
 @app.route('/view')
 def view_records():
     records = Record.query.all()  # データベースから全てのレコードを取得
+    print(records)
     return render_template('view_records.html', records=records)
 
 
