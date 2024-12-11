@@ -11,8 +11,14 @@ print(f"Current working directory: {os.getcwd()}")
 
 # データベースの設定
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///watchlog.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/ailab/WatchLog/watchlog.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/ailab/WatchLog/watchlog.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = SQLAlchemy(app)
+db_path = '/tmp/watchlog.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# インスタンスフォルダを作成（デプロイ時に必要）
+os.makedirs(app.instance_path, exist_ok=True)
 db = SQLAlchemy(app)
 
 class Record(db.Model):
