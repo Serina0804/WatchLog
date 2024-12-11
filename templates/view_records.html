@@ -11,22 +11,19 @@
     </header>
     <main>
         <h2>あなたの登録作品一覧</h2>
-        <div>
-            <div>
-                {% for record in records %}
-                <div>
-                    <img src="{{ record.image_path }}" alt="{{ record.title }}" style="width:150px; height:100px;">
-                    <p>{{ record.title }}</p>
-                    <p>{{ '★' * record.rating }}</p>
-                    <form method="POST" action="/delete/{{ record.id }}">
-                        <button type="submit">削除</button>
-                    </form>
-                </div>
-                {% endfor %}
+        <!-- カードを囲む親要素にクラスを追加 -->
+        <div class="card-container">
+            {% for record in records %}
+            <!-- 個々のカード -->
+            <div class="card">
+                <img src="{{ record.image_path }}" alt="{{ record.title }}">
+                <p>{{ record.title }}</p>
+                <p>{{ '★' * record.rating }}</p>
+                <form method="POST" action="/delete/{{ record.id }}">
+                    <button type="submit">削除</button>
+                </form>
             </div>
-            <form method="POST" action="/reset" style="margin-top: 20px;">
-                <button type="submit">すべての情報を削除</button>
-            </form>
+            {% endfor %}
         </div>
     </main>
 </body>

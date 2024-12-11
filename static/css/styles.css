@@ -127,6 +127,7 @@ div > div {
     border-radius: 8px;
     padding: 10px;
     text-align: center; /* 内容を中央寄せ */
+    flex-wrap: wrap;
 }
 
 div > div:hover {
