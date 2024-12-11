@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>WatchLog - 新規登録</title>
+</head>
+<body>
+    <header>
+        <h1><a href="/">WatchLog</a></h1>
+    </header>
+    <main>
+        <h2>新規登録</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="title">作品名</label>
+            <input type="text" name="title" required><br>
+            <label for="image">登録写真</label>
+            <input type="file" name="image" accept="image/*" required><br>
+            <label for="rating">評価</label>
+            <input type="radio" name="rating" value="1" required>1
+            <input type="radio" name="rating" value="2">2
+            <input type="radio" name="rating" value="3">3
+            <input type="radio" name="rating" value="4">4
+            <input type="radio" name="rating" value="5">5<br>
+            <button type="submit">登録</button>
+        </form>
+    </main>
+</body>
+</html>

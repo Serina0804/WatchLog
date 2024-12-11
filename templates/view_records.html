@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>WatchLog - 作品一覧</title>
+</head>
+<body>
+    <header>
+        <h1><a href="/">WatchLog</a></h1>
+    </header>
+    <main>
+        <h2>Serinaさんの登録作品一覧</h2>
+        <div>
+            <div>
+                {% for record in records %}
+                <div>
+                    <img src="{{ record.image_path }}" alt="{{ record.title }}" style="width:150px; height:100px;">
+                    <p>{{ record.title }}</p>
+                    <p>{{ '★' * record.rating }}</p>
+                    <form method="POST" action="/delete/{{ record.id }}">
+                        <button type="submit">削除</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            <form method="POST" action="/reset" style="margin-top: 20px;">
+                <button type="submit">すべての情報を削除</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
