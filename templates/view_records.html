@@ -17,6 +17,7 @@
             <!-- 個々のカード -->
             <div class="card">
                 <img src="{{ record.image_path }}" alt="{{ record.title }}">
+                <p>{{ record.tag }}</p>
                 <p>{{ record.title }}</p>
                 <p>{{ '★' * record.rating }}</p>
                 <form method="POST" action="/delete/{{ record.id }}">

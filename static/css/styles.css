@@ -106,39 +106,64 @@ form input[type="radio"] {
 }
 
 /* 画像と評価リスト */
-div img {
+/* div img {
     max-width: 150px;
     height: auto;
     display: block;
     margin: 10px auto;
-}
+} */
 
-div p {
+/* div p {
     text-align: center;
     margin: 10px 0;
-}
+} */
 
-/* カード表示 */
-div > div {
-    width: 200px; /* カード幅を統一 */
-    margin: 10px; /* カード間の間隔を調整 */
+/* カード内のレイアウト調整 */
+.card {
+    display: flex;
+    flex-direction: column; /* 子要素を縦に並べる */
+    align-items: center; /* 子要素を中央揃え */
+    justify-content: center;
+    width: 200px; /* カードの幅 */
+    margin: 10px;
     background: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 10px;
-    text-align: center; /* 内容を中央寄せ */
-    flex-wrap: wrap;
+    text-align: center;
+    height: auto; /* カードの高さを自動調整 */
 }
+
+
+.card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+/* テキストのマージンを減らす */
+.card p {
+    margin: 1px 0; /* 各行の間隔を調整 */
+    font-size: 13px; /* テキストサイズを小さくする */
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* 削除ボタンの間隔を調整 */
+.card form {
+    margin-top: 5px; /* 削除ボタンの間隔を縮小 */
+}
+
 
 div > div:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* リストの親コンテナ */
+/* 親コンテナの調整 */
 div {
-    display: flex; /* フレックスボックスを使用 */
-    flex-wrap: wrap; /* 横に並べて、折り返しを有効化 */
-    justify-content: center; /* コンテンツを中央揃え */
-    gap: 20px; /* カード間のスペース */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* カード間のスペースを狭くする */
     margin-top: 20px;
 }
