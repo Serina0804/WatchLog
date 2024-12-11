@@ -83,7 +83,7 @@ def delete_record(id):
 
 if __name__ == '__main__':
     # Renderの環境変数PORTを取得し、デフォルト値は5000
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 4000))
     # ホストを0.0.0.0に設定して、すべてのネットワークインターフェースからのリクエストを受け入れる
     app.run(host="0.0.0.0", port=port)
     # app.run(debug=True)
