@@ -17,6 +17,10 @@
             <label for="title">パスワード</label>
             <input type="text" name="password" required><br>
             <button type="submit">ログイン</button>
+            <!-- エラーがある場合に表示 -->
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
             <p>アカウントをお持ちでない方は<a href="{{ url_for('register_user') }}">こちら</a></p>
         </form>
     </main>

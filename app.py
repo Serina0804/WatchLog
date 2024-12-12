@@ -47,13 +47,23 @@ if not os.path.exists('watchlog.db'):
 else :
     print("db exit!")
 
-# @app.route('/')
-# def home():
-#     print(f"Database path: {os.path.abspath('watchlog.db')}")
-#     return render_template('index.html')
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        # POSTリクエストの場合、ログイン処理を行う
+        user_name = request.form['user_name']
+        password = request.form['password']
+        print(f"Logging in user: {user_name} with password: {password}")
+        user = UserRecord.query.filter_by(user_id=user_name).first()
+        if user and user.user_password == password:
+            print("Login successful")
+            return redirect(url_for('view_records'))
+        else:
+            print("Login failed")
+            error_message = "ユーザー名またはパスワードが間違っています"
+            return render_template('login.html', error=error_message)
+    
+    # GETリクエストの場合、ログイン画面を表示
     print(f"Database path: {os.path.abspath('watchlog.db')}")
     return render_template('login.html')
 
@@ -73,6 +83,7 @@ def login_user():
         else:
             # ログイン失敗
             error_message = "ユーザー名またはパスワードが間違っています"
+            print("login error")
             return render_template('login.html', error=error_message)
         
     print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
