@@ -42,7 +42,8 @@ WatchLog：映画、漫画、アニメ、ドラマ、バラエティなど見た
 
 <!-- Treeコマンドを使ってディレクトリ構成を記載 -->
 
-❯ tree -a -I "node_modules|.next|.git|.pytest_cache|static" -L 2
+<!-- ❯ tree -a -I "node_modules|.next|.git|.pytest_cache|static" -L 2 -->
+```
 .
 ├── README.md                # プロジェクトの概要、技術スタック、セットアップ手順など
 ├── requirements.txt         # Pythonの依存関係
@@ -64,6 +65,7 @@ WatchLog：映画、漫画、アニメ、ドラマ、バラエティなど見た
 ├── migrations/              # Alembicのマイグレーションファイル用ディレクトリ
 ├── tmp/                     # 一時ファイル用ディレクトリ
 └── instance/                # Flaskアプリケーションのインスタンスフォルダ（設定や追加ファイルの保存用）
+```
 
 
 <p align="right">(<a href="#top">トップへ</a>)</p>
