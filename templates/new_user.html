@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>WatchLog - ユーザー新規登録</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1><a href="/">WatchLog</a></h1>
+    </header>
+    <main>
+        <h2>ユーザー新規登録</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="title">ユーザー名</label>
+            <input type="text" name="user_name" required><br>
+            <label for="title">パスワード</label>
+            <input type="text" name="password" required><br>
+            <button type="submit">新規登録</button>
+            <p>アカウントをお持ちの方は<a href="{{ url_for('login_user') }}">こちら</a></p>
+        </form>
+    </main>
+</body>
+</html>
