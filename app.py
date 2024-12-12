@@ -192,10 +192,10 @@ def delete_record(id):
 if __name__ == '__main__':
     
     print("Checking database creation...")
-    # with app.app_context():
-    #     db.drop_all()  # 既存のすべてのテーブルを削除
-    #     db.create_all()  # すべてのテーブルを作成
-    #     print("Database and tables recreated.")
+    with app.app_context():
+        db.drop_all()  # 既存のすべてのテーブルを削除
+        db.create_all()  # すべてのテーブルを作成
+        print("Database and tables recreated.")
     # if not os.path.exists('watchlog.db'):
     #     print("Database not found. Creating...")
     #     with app.app_context():
