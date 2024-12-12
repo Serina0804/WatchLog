@@ -8,13 +8,8 @@ app.secret_key = "your_secret_key"  # セッション用のキーを設定
 
 print(f"Current working directory: {os.getcwd()}")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/watchlog.db'
-# # 基本的なデータベース設定
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/watchlog.db'
-# # 複数のデータベースを使用する場合の設定
-# app.config['SQLALCHEMY_BINDS'] = {
-#     'users': 'sqlite:////tmp/users.db'
-# }
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///watchlog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -68,7 +63,7 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
     if request.method == 'POST':
-        print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
+        print(f"Using database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
         user_name = request.form['user_name']
         password = request.form['password']
         print(user_name , password)
@@ -85,13 +80,12 @@ def login_user():
             print("login error")
             return render_template('login.html', error=error_message)
         
-    # print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
     if request.method == 'POST':
-        print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
+        print(f"Using database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
         user_name = request.form['user_name']
         password = request.form['password']
         
@@ -102,7 +96,6 @@ def register_user():
         new_user = UserRecord(user_id=user_name, user_password=password)
         db.session.add(new_user)
         db.session.commit()
-        # print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
         # print(f"Record added: {new_user.user_id}, {new_user.user_password}")
         return redirect(url_for('login_user'))
     return render_template('new_user.html')  # GETリクエストの場合
@@ -201,7 +194,7 @@ if __name__ == '__main__':
             print("Database created.")
     else:
         print("Database already exists.")
-    print(f"Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    print(f"Using database: {app.config['SQLALCHEMY_DATABASE_URI']}")
     print(f"Expected database location: {os.path.abspath('watchlog.db')}")
 
     # Renderの環境変数PORTを取得し、デフォルト値は5000
