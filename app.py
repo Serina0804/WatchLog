@@ -1,25 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,session
 import os
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.secret_key = "your_secret_key"  # セッション用のキーを設定
+
 
 print(f"Current working directory: {os.getcwd()}")
 
-# データベースの代わりにリストを使用（簡易版）
-# records = []
-
-# データベースの設定
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///watchlog.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/ailab/WatchLog/watchlog.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
-# 基本的なデータベース設定
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/watchlog.db'
-# 複数のデータベースを使用する場合の設定
-app.config['SQLALCHEMY_BINDS'] = {
-    'users': 'sqlite:////tmp/users.db'
-}
+# # 基本的なデータベース設定
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/watchlog.db'
+# # 複数のデータベースを使用する場合の設定
+# app.config['SQLALCHEMY_BINDS'] = {
+#     'users': 'sqlite:////tmp/users.db'
+# }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -30,25 +25,27 @@ class Record(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     image_path = db.Column(db.String(200), nullable=False)
     tag = db.Column(db.String(200), nullable=False)
-    # user_id = db.Column(db.String(100), primary_key=True)
-    # user_passward = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.String(100), db.ForeignKey('user_record.user_id'), nullable=False)
 
 class UserRecord(db.Model):
-    __bind_key__ = 'users'
     user_id = db.Column(db.String(100), primary_key=True)
     user_password = db.Column(db.String(100), nullable=False)
 
 # データベースの作成
-if not os.path.exists('watchlog.db'):
-    with app.app_context():
-        db.drop_all()  # 既存のテーブルを削除
-        db.create_all()  # 新しいテーブルを作成
-        print("Database and tables recreated.")
-else :
-    print("db exit!")
+# if not os.path.exists('watchlog.db'):
+#     with app.app_context():
+#         db.drop_all()  # 既存のテーブルを削除
+#         db.create_all()  # 新しいテーブルを作成
+#         print("Database and tables recreated.")
+# else :
+#     print("db exit!")
+    
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    if 'user_id' in session:
+        user_name = session['user_id']
+        return render_template('index.html', user_name=user_name)
     if request.method == 'POST':
         # POSTリクエストの場合、ログイン処理を行う
         user_name = request.form['user_name']
@@ -57,6 +54,7 @@ def home():
         user = UserRecord.query.filter_by(user_id=user_name).first()
         if user and user.user_password == password:
             print("Login successful")
+            session['user_id'] = user.user_id
             return redirect(url_for('view_records'))
         else:
             print("Login failed")
@@ -79,6 +77,7 @@ def login_user():
         if user and user.user_password == password:  # ユーザーが存在しパスワードが一致する場合
             # ログイン成功
             print("login OK")
+            session['user_id'] = user.user_id
             return redirect(url_for('view_records'))
         else:
             # ログイン失敗
@@ -86,7 +85,7 @@ def login_user():
             print("login error")
             return render_template('login.html', error=error_message)
         
-    print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
+    # print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -103,8 +102,8 @@ def register_user():
         new_user = UserRecord(user_id=user_name, user_password=password)
         db.session.add(new_user)
         db.session.commit()
-        print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
-        print(f"Record added: {new_user.user_id}, {new_user.user_password}")
+        # print(f"Using database URI: {app.config['SQLALCHEMY_BINDS']}")
+        # print(f"Record added: {new_user.user_id}, {new_user.user_password}")
         return redirect(url_for('login_user'))
     return render_template('new_user.html')  # GETリクエストの場合
 
@@ -117,6 +116,9 @@ def reset_records():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_record():
+    if 'user_id' not in session:
+        # ログインしていない場合はログイン画面にリダイレクト
+        return redirect(url_for('login_user'))
     if request.method == 'POST':
         print(f"Using database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
         title = request.form['title']
@@ -140,9 +142,12 @@ def add_record():
             os.makedirs(upload_folder)
         image_path = os.path.join(upload_folder, image.filename)
         image.save(image_path)
+        
+        # 現在ログイン中のユーザーIDを取得
+        user_id = session['user_id']
 
         # データベースに保存
-        new_record = Record(title=title, rating=rating, image_path=image_path, tag = tag)
+        new_record = Record(title=title, rating=rating, image_path=image_path, tag = tag, user_id=user_id)
         db.session.add(new_record)
         db.session.commit()
         print(f"Using database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
@@ -155,10 +160,19 @@ def add_record():
 
 @app.route('/view')
 def view_records():
-    records = Record.query.all()  # データベースから全てのレコードを取得
+    if 'user_id' not in session:
+        # ログインしていない場合はログイン画面にリダイレクト
+        return redirect(url_for('login_user'))
+    user_id = session['user_id']
+    # ログインユーザーに紐付いた作品を取得
+    records = Record.query.filter_by(user_id=user_id).all()
     print(records)
     return render_template('view_records.html', records=records)
 
+@app.route('/logout')
+def logout():
+    session.clear()  # セッションをクリア
+    return redirect(url_for('login_user'))
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_record(id):
@@ -176,18 +190,15 @@ def delete_record(id):
 if __name__ == '__main__':
     
     print("Checking database creation...")
+    # with app.app_context():
+    #     db.drop_all()  # 既存のすべてのテーブルを削除
+    #     db.create_all()  # すべてのテーブルを作成
+    #     print("Database and tables recreated.")
     if not os.path.exists('watchlog.db'):
         print("Database not found. Creating...")
         with app.app_context():
             db.create_all()
             print("Database created.")
-    else:
-        print("Database already exists.")
-    if not os.path.exists('user.db'):
-        print("Database not found. Creating...")
-        with app.app_context():
-            db.create_all()
-            print("UserDatabase created.")
     else:
         print("Database already exists.")
     print(f"Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
